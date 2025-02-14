@@ -12,7 +12,6 @@
 ```docker run --name sonarqube -p 9000:9000 sonarqube```
 
 дефолтные креды: admin admin
-
 оттуда необходимо взять projectkey при создании проекта + взять токен из профиля
 
 5. manage jenkins -> tools -> добавить jdk, maven

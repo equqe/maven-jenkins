@@ -7,36 +7,33 @@ pipeline {
     }
 
     environment {
-        SONARQUBE_SCANNER = 'SonarQube'
+        PATH = "C:\\Windows\\System32;${env.PATH}"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                url: 'https://github.com/equqe/maven-jenkins.git'
+                url: 'https://github.com/equqe/maven-jenkins.git' // ссылка на репозиторий
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean install'
-            }
-        }
-
-        stage('Unit Tests') {
-            steps {
-                sh 'mvn test'
+                dir('demo') {
+                    bat 'mvn clean install'
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv(SONARQUBE_SCANNER) {
-                    sh 'mvn sonar:sonar \
-                        -Dsonar.projectKey=maven-jenkins \
-                        -Dsonar.host.url=http://localhost:9000 \
-                        -Dsonar.login=sqa_5a6b1cfb8984d629415d23e040a39f465b1cfba4'
+                withSonarQubeEnv('maven-jenkins') { // имя, указанное в настройках Jenkins
+                    dir('demo') {
+                        bat 'mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=maven-jenkins \
+                            -Dsonar.projectName=maven-jenkins'
+                    }
                 }
             }
         }
